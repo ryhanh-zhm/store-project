@@ -12,21 +12,45 @@ class Store:
 
     def main_menu(self):
         while True:
-            print("\n1. Register/Login as Customer")
-            print("2. Login as Admin")
-            print("3. Exit")
+            print("\n1. Register as Customer")
+            print("2. Login as Customer")
+            print("3. Login as Admin")
+            print("4. Exit")
             choice = input("Choose an option: ")
             if choice == "1":
-                self.customer_login()
+                self.register_customer()
             elif choice == "2":
-                self.admin_login()
+                self.customer_login()
             elif choice == "3":
+                self.admin_login()
+            elif choice == "4":
                 break
+            else:
+                print("Invalid choice.")
+
+    def register_customer(self):
+        username = input("Enter new username: ")
+        if username in self.users["username"].values:
+            print("Username already exists.")
+            return
+        password = input("Enter password: ")
+        new_user = pd.DataFrame([{
+            "username": username,
+            "password": password,
+            "role": "customer"
+        }])
+        self.users = pd.concat([self.users, new_user], ignore_index=True)
+        save_data("data/users.csv", self.users)
+        print("✅ Registration successful!")
 
     def customer_login(self):
         username = input("Username: ")
         password = input("Password: ")
-        user = self.users[(self.users.username == username) & (self.users.password == password) & (self.users.role == "customer")]
+        user = self.users[
+            (self.users.username == username) &
+            (self.users.password == password) &
+            (self.users.role == "customer")
+        ]
         if not user.empty:
             self.current_user = Customer(username)
             self.customer_menu()
@@ -36,7 +60,11 @@ class Store:
     def admin_login(self):
         username = input("Admin Username: ")
         password = input("Password: ")
-        user = self.users[(self.users.username == username) & (self.users.password == password) & (self.users.role == "admin")]
+        user = self.users[
+            (self.users.username == username) &
+            (self.users.password == password) &
+            (self.users.role == "admin")
+        ]
         if not user.empty:
             self.current_user = Admin(username)
             self.admin_menu()
