@@ -47,18 +47,23 @@ class Store:
         while True:
             print("\n1. View Products")
             print("2. Add to Cart")
-            print("3. Place Order")
-            print("4. Back")
+            print("3. Remove from Cart")
+            print("4. Place Order")
+            print("5. Back")
             choice = input("Choose an option: ")
             if choice == "1":
                 print(self.products)
             elif choice == "2":
                 product_id = input("Enter Product ID: ")
-                self.current_user.add_to_cart(product_id)
+                quantity = int(input("Enter quantity: "))
+                self.current_user.add_to_cart(product_id, quantity)
             elif choice == "3":
+                product_id = input("Enter Product ID to remove: ")
+                self.current_user.remove_from_cart(product_id)
+            elif choice == "4":
                 self.current_user.place_order(self.orders)
                 save_data("data/orders.csv", self.orders)
-            elif choice == "4":
+            elif choice == "5":
                 break
 
     def admin_menu(self):
